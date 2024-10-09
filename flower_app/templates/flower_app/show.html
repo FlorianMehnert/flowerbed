@@ -8,21 +8,51 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flower List</title>
     {% compress css %}
-    <link rel="stylesheet"
-        href="{% static '/css/dist/styles.css' %}">
+        <link rel="stylesheet"
+              href="{% static '/css/dist/styles.css' %}">
     {% endcompress %}
 </head>
 <body>
-    <h1 class="bg-red-500 text-5xl">Current Flowers</h1>
-    <ul class="list-none">
+<h1 class="bg-red-500 text-5xl">Current Flowers</h1>
+<div class="slider-container relative">
+    <label for="date-slider">Select Date:</label>
+    <input type="range" id="date-slider" min="1" max="12" value="2024" oninput="updateFlowerVisibility()">
+    <span id="slider-value">2024</span>
+</div>
+<ul class="list-none">
+    {% for flower in flowers %}
+        <li id="flower-{{ flower.id }}" class="absolute" style="left: {{ flower.x_position }}px; top: {{ flower.y_position }}px" data-start-date="{{ flower.start_date }}" data-end-date="{{ flower.end_date }}">
+            <img src="{{ flower.image_url }}" alt="{{ flower.name }}" style="width: 50px; height: 50px;">
+            {{ flower.name }}
+        </li>
+    {% endfor %}
+</ul>
+<script>
+    // Function to update the slider value and filter flowers by ID
+    function updateFlowerVisibility() {
+        var slider = document.getElementById('date-slider');
+        var sliderValue = slider.value;
+        document.getElementById('slider-value').textContent = sliderValue;
+
+        // Loop through each flower by id and show/hide based on start_date
         {% for flower in flowers %}
-            <li>
-                <img src="{{ flower.image_url }}" alt="{{ flower.name }}" style="width: 50px; height: 50px;">
-                {{ flower.name }} (Position: {{ flower.x_position }}, {{ flower.y_position }})
-                (Start Date: {{ flower.start_date }}, End Date: {{ flower.end_date }})
-            </li>
+            var flowerElement = document.getElementById('flower-{{ flower.id }}');
+            var startDate = flowerElement.getAttribute('data-start-date');
+            var endDate = flowerElement.getAttribute('data-end-date');
+
+            // Compare flower's start_date with the slider value
+            if (parseInt(startDate) <= sliderValue && parseInt(endDate) >= sliderValue) {
+                flowerElement.style.display = 'block'; // Show flower
+            } else {
+                flowerElement.style.display = 'none';  // Hide flower
+
+            }
         {% endfor %}
-    </ul>
-    <a href="{% url 'add' %}">Add a New Flower</a>
+    }
+
+    // Call the function once to initialize the visibility based on the default slider value
+    updateFlowerVisibility();
+</script>
+<a href="{% url 'add' %}">Add a New Flower</a>
 </body>
 </html>
