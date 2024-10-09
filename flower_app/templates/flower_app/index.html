@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blumenbeet</title>
+    <style>
+        .flower-garden {
+            position: relative;
+            width: 100%;
+            height: 600px;
+            border: 1px solid #ccc;
+        }
+
+        .flower {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+        }
+    </style>
+    <link rel="shortcut icon" type="image/png" href="{% static 'images/favicon.png' %}"/>
+</head>
+<body>
+
+
+<h2>Current Flowers</h2>
+{{ form }}
+<div id="flower-garden" class="flower-garden">
+
+    {% for flower in flowers %}
+        <img src="{{ flower.image_url }}" alt="{{ flower.name }}" class="flower" style="left: {{ flower.x_position }}px; top: {{ flower.y_position }}px;">
+    {% endfor %}
+</div>
+
+<script>
+    document.getElementById('flower-garden').addEventListener('click', function (event) {
+        // Get the mouse click position relative to the flower-garden
+        const rect = this.getBoundingClientRect();
+        const x = event.clientX - rect.left; // Calculate the x position
+        const y = event.clientY - rect.top;  // Calculate the y position
+
+        // Set the values of the hidden fields
+        document.getElementById('id_x_position').value = x;
+        document.getElementById('id_y_position').value = y;
+    });
+</script>
+</body>
+</html>

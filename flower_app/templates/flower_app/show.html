@@ -1,0 +1,28 @@
+{% load compress %}
+{% load static %}
+{% load django_browser_reload %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flower List</title>
+    {% compress css %}
+    <link rel="stylesheet"
+        href="{% static '/css/dist/styles.css' %}">
+    {% endcompress %}
+</head>
+<body>
+    <h1 class="bg-red-500 text-3xl">Current Flowers</h1>
+    <ul class="list-none">
+        {% for flower in flowers %}
+            <li>
+                <img src="{{ flower.image_url }}" alt="{{ flower.name }}" style="width: 50px; height: 50px;">
+                {{ flower.name }} (Position: {{ flower.x_position }}, {{ flower.y_position }})
+                (Start Date: {{ flower.start_date }}, End Date: {{ flower.end_date }})
+            </li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'add' %}">Add a New Flower</a>
+</body>
+</html>

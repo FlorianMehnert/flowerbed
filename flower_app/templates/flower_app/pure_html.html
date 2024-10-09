@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flowerbed Blooming Visualizer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            position: relative;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        .flower-container {
+            position: relative;
+            width: 100%;
+            height: calc(100% - 200px);
+            border: 1px solid #ccc;
+            overflow: hidden;
+        }
+        .flower {
+            position: absolute;
+            text-align: center;
+        }
+        .flower img {
+            max-width: 100px;
+            border-radius: 10px;
+        }
+        .flower-name {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .hidden {
+            display: none;
+        }
+        .controls {
+            position: relative;
+            margin: 20px;
+        }
+        .slider {
+            width: 80%;
+        }
+        .add-flower-form {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+            padding: 10px;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+    <h1>Flowerbed Blooming Visualizer</h1>
+
+    <!-- Slider control for changing the time of year -->
+    <div class="controls">
+        <label for="time-slider">Select Date:</label>
+        <input type="range" id="time-slider" class="slider" min="0" max="365" value="0">
+        <p id="selected-date">Date: January 1st</p>
+    </div>
+
+    <div class="flower-container" id="flower-container">
+        <!-- Flower cards will be dynamically inserted here -->
+    </div>
+
+    <!-- Form to add a new flower -->
+    <div id="add-flower-form" class="add-flower-form">
+        <h3>Add New Flower</h3>
+        <label for="flower-name">Flower Name:</label>
+        <input type="text" id="flower-name" placeholder="Enter flower name"><br><br>
+
+        <label for="blooming-start">Blooming Start:</label>
+        <input type="date" id="blooming-start"><br><br>
+
+        <label for="blooming-end">Blooming End:</label>
+        <input type="date" id="blooming-end"><br><br>
+
+        <label for="flower-image">Image URL:</label>
+        <input type="url" id="flower-image" placeholder="Enter image URL"><br><br>
+
+        <button id="submit-flower">Add Flower</button>
+        <button id="cancel-flower">Cancel</button>
+    </div>
+
+    <script>
+        let flowers = [
+            {
+                name: "Rose",
+                bloomingStart: new Date(2024, 4, 1),  // May 1st
+                bloomingEnd: new Date(2024, 9, 30),  // October 30th
+                imageUrl: "https://example.com/rose.jpg",
+                positionX: 100,
+                positionY: 150
+            },
+            {
+                name: "Tulip",
+                bloomingStart: new Date(2024, 2, 15),  // March 15th
+                bloomingEnd: new Date(2024, 5, 30),  // June 30th
+                imageUrl: "https://example.com/tulip.jpg",
+                positionX: 300,
+                positionY: 250
+            },
+            {
+                name: "Sunflower",
+                bloomingStart: new Date(2024, 6, 1),
+                bloomingEnd: new Date(2024, 8, 30),
+                imageUrl: "https://example.com/sunflower.jpg",
+                positionX: 500,
+                positionY: 50
+            }
+        ];
+
+        let clickedX, clickedY;
+
+        const flowerContainer = document.getElementById('flower-container');
+        const addFlowerForm = document.getElementById('add-flower-form');
+        const submitFlowerButton = document.getElementById('submit-flower');
+        const cancelFlowerButton = document.getElementById('cancel-flower');
+
+        // Capture click to set the position for the new flower
+        flowerContainer.addEventListener('click', function(event) {
+            clickedX = event.offsetX;
+            clickedY = event.offsetY;
+
+            // Display the form at the clicked position
+            addFlowerForm.style.display = 'block';
+            addFlowerForm.style.left = `${clickedX}px`;
+            addFlowerForm.style.top = `${clickedY}px`;
+        });
+
+        // Handle the submission of the new flower
+        submitFlowerButton.addEventListener('click', function() {
+            const flowerName = document.getElementById('flower-name').value;
+            const bloomingStart = new Date(document.getElementById('blooming-start').value);
+            const bloomingEnd = new Date(document.getElementById('blooming-end').value);
+            const flowerImage = document.getElementById('flower-image').value || 'https://example.com/default-flower.jpg';
+
+            // Add the new flower to the array
+            flowers.push({
+                name: flowerName,
+                bloomingStart: bloomingStart,
+                bloomingEnd: bloomingEnd,
+                imageUrl: flowerImage,
+                positionX: clickedX,
+                positionY: clickedY
+            });
+
+            // Hide the form and refresh the display
+            addFlowerForm.style.display = 'none';
+            displayBloomingFlowers(getDateFromSlider(document.getElementById('time-slider').value));
+        });
+
+        // Handle cancel button click
+        cancelFlowerButton.addEventListener('click', function() {
+            addFlowerForm.style.display = 'none';
+        });
+
+        // Function to get the date from the slider (0-365 range)
+        function getDateFromSlider(value) {
+            const startOfYear = new Date(2024, 0, 1);
+            const simulatedDate = new Date(startOfYear);
+            simulatedDate.setDate(startOfYear.getDate() + parseInt(value));
+            return simulatedDate;
+        }
+
+        // Function to format the date into a human-readable string
+        function formatDate(date) {
+            const options = { month: 'long', day: 'numeric' };
+            return date.toLocaleDateString(undefined, options);
+        }
+
+        // Function to check if a flower is blooming on a given date
+        function isBlooming(flower, currentDate) {
+            return flower.bloomingStart <= currentDate && flower.bloomingEnd >= currentDate;
+        }
+
+        // Function to display blooming flowers for a specific date
+        function displayBloomingFlowers(currentDate) {
+            const container = document.getElementById('flower-container');
+            container.innerHTML = ''; // Clear previous flowers
+
+            flowers.forEach(flower => {
+                if (isBlooming(flower, currentDate)) {
+                    const flowerCard = document.createElement('div');
+                    flowerCard.classList.add('flower');
+                    flowerCard.style.left = `${flower.positionX}px`;  // Set X position
+                    flowerCard.style.top = `${flower.positionY}px`;   // Set Y position
+
+                    flowerCard.innerHTML = `
+                        <img src="${flower.imageUrl}" alt="${flower.name}">
+                        <p class="flower-name">${flower.name}</p>
+                        <p>Blooming until: ${flower.bloomingEnd.toDateString()}</p>
+                    `;
+                    container.appendChild(flowerCard);
+                }
+            });
+
+            if (container.innerHTML === "") {
+                container.innerHTML = "<p>No flowers are blooming on this date.</p>";
+            }
+        }
+
+        // Slider event listener to update the date
+        document.getElementById('time-slider').addEventListener('input', function(event) {
+            const sliderValue = event.target.value;
+            const currentDate = getDateFromSlider(sliderValue);
+            document.getElementById('selected-date').textContent = `Date: ${formatDate(currentDate)}`;
+            displayBloomingFlowers(currentDate);
+        });
+
+        // Initialize the display for January 1st
+        const initialDate = getDateFromSlider(0);
+        document.getElementById('selected-date').textContent = `Date: ${formatDate(initialDate)}`;
+        displayBloomingFlowers(initialDate);
+    </script>
+</body>
+</html>
