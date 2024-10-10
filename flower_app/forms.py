@@ -11,8 +11,8 @@ class FlowerForm(forms.ModelForm):
         (8, 'August'), (9, 'September'), (10, 'Oktober'),
         (11, 'November'), (12, 'Dezember')
     ]
-    start_date = forms.ChoiceField(choices=months)
-    end_date = forms.ChoiceField(choices=months)
+    start_date = forms.ChoiceField(label='Anfang Blühzeit', choices=months)
+    end_date = forms.ChoiceField(label='Ende Blühzeit', choices=months)
 
     class Meta:
         model = Flower
@@ -30,6 +30,6 @@ class FlowerForm(forms.ModelForm):
 
             # Validate that start_date is less than or equal to end_date
             if start_month > end_month:
-                raise ValidationError("Start date cannot be later than end date.")
+                raise ValidationError("Anfang der Blühzeit muss vor Ende der Blühzeit sein.")
 
         return cleaned_data

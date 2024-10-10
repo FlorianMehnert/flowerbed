@@ -9,7 +9,7 @@ def add(request):
         form = FlowerForm(request.POST)
         if form.is_valid():
             form.save()  # Save the flower to the database
-            return redirect('show')  # Redirect to the flower list after saving
+            return redirect('add')  # Redirect to the flower list after saving
     else:
         form = FlowerForm()
         flowers = Flower.objects.all()  # Get all flowers from the database

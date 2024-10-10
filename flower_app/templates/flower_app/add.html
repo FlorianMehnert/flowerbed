@@ -14,7 +14,7 @@
 <body class="h-full flex flex-col">
 <div class="container mx-auto px-4 py-8 flex-grow overflow-hidden">
     <div class="slider-container relative mb-4">
-        <label for="date-slider" class="block mb-2">Select Date:</label>
+        <label for="date-slider" class="block mb-2">Monat auswählen:</label>
         <div class="flex items-center">
             <input type="range" id="date-slider" min=1 max=12 value=9 oninput="updateFlowerVisibility()" class="w-full">
             <span id="slider-value" class="ml-2">9</span>
@@ -24,22 +24,19 @@
     <div class="mb-4">
         <form method="post" enctype="multipart/form-data" class="flex flex-row space-x-4">
             {% csrf_token %}
-            <div class="mt-4">
-                <a href="{% url 'show' %}" class="text-blue-500 hover:text-blue-700">View Flower List</a>
-            </div>
             <div class="flex items-center space-x-2">
                 {{ form }}
             </div>
-            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Add Flower</button>
+            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Hinzufügen</button>
         </form>
     </div>
 
-    <div class="relative h-[80%] overflow-hidden border border-gray-200 rounded" id="flowerbed">
-        <ul class="list-none absolute inset-0">
+    <div class="relative h-[80%] overflow-hidden border border-gray-200 rounded bg-[url('/static/images/dirt.png')]" id="flowerbed">
+        <ul class="list-none absolute inset-0" id="flowerbed-ul">
             {% for flower in flowers %}
                 <li id="flower-{{ flower.id }}" class="absolute" style="left: {{ flower.x_position }}px; top: {{ flower.y_position }}px" data-start-date="{{ flower.start_date }}" data-end-date="{{ flower.end_date }}">
-                    <img src="{{ flower.image_url }}" alt="{{ flower.name }}" class="w-12 h-12 object-cover">
-                    <span class="text-xs">{{ flower.name }}</span>
+                    <img src="{{ flower.image_url }}" alt="{{ flower.name }}" title="{{ flower.name }}" class="w-12 h-12 shadow-md object-cover rounded border-white border-2">
+                    <span class="text-xs bg-white w-full rounded text-center p-0.5">{{ flower.name }}</span>
                 </li>
             {% endfor %}
         </ul>
@@ -77,7 +74,6 @@
     // Function to handle scrolling
     document.addEventListener('wheel', function (event) {
         event.preventDefault(); // Prevent the page from scrolling
-        console.log("hi")
         // Check the direction of scroll: up or down
         if (event.deltaY < 0 && parseInt(slider.value) < parseInt(slider.max)) {
             slider.value++;
@@ -93,22 +89,35 @@
     updateFlowerVisibility();
 
     const xInput = document.getElementById('id_x_position');
-const yInput = document.getElementById('id_y_position');
+    const yInput = document.getElementById('id_y_position');
 
-// Add a click event listener to the specific HTML element (flowerbed)
-const flowerbed = document.getElementById('flowerbed');
-flowerbed.addEventListener('click', function (event) {
-    // Get the bounding rectangle of the flowerbed element
-    const rect = flowerbed.getBoundingClientRect();
+    // Add a click event listener to the specific HTML element (flowerbed)
+    const flowerbed = document.getElementById('flowerbed');
+    flowerbed.addEventListener('click', function (event) {
+        // Get the bounding rectangle of the flowerbed element
+        const rect = flowerbed.getBoundingClientRect();
 
-    // Calculate the x and y coordinates relative to the flowerbed element
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
+        // Calculate the x and y coordinates relative to the flowerbed element
+        const x = event.clientX - rect.left;
+        const y = event.clientY - rect.top;
 
-    // Set the input fields with the coordinates relative to the element
-    xInput.value = x;
-    yInput.value = y;
-});
+        // Set the input fields with the coordinates relative to the element
+        xInput.value = x;
+        yInput.value = y;
+        preview(x, y);
+    });
+
+    function preview(x, y) {
+        const flowerbed_ul = document.getElementById('flowerbed-ul');
+        const previous_previous = document.getElementById('preview');
+        if (!previous_previous){
+            flowerbed_ul.innerHTML += '<li id="preview" class="absolute" style="left:' + String(parseInt(x)-25) + 'px; top: ' + String(parseInt(y)-25) + 'px"><svg height="50" width="50" xmlns="http://www.w3.org/2000/svg"><circle r="25" cx="25" cy="25" fill="red" /></svg></li>';
+        } else {
+            previous_previous.style.left = String(parseInt(x)-25) + 'px';
+            previous_previous.style.top = String(parseInt(y)-25) + 'px';
+        }
+
+    }
 
 </script>
 </body>
