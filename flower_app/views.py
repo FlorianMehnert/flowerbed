@@ -12,6 +12,8 @@ def add(request):
             return redirect('show')  # Redirect to the flower list after saving
     else:
         form = FlowerForm()
+        flowers = Flower.objects.all()  # Get all flowers from the database
+        return render(request, 'flower_app/add.html', {'form': form, 'flowers': flowers})
     return render(request, 'flower_app/add.html', {'form': form})
 
 
