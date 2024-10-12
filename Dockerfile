@@ -20,5 +20,8 @@ RUN pip install --upgrade pip && pip install -r requirements.txt
 # Copy project
 COPY . /app/
 
+# build static files
+CMD python manage.py tailwind build
+
 # Run migrations and start server
 CMD python manage.py migrate && python manage.py runserver 0.0.0.0:8000
