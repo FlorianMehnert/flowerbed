@@ -15,7 +15,6 @@ pip install -r requirements.txt
 ```
 - setup django project and start
 ```bash
-python manage.py tailwind build
 python manage.py migrate
 python manage.py runserver
 ```
@@ -24,6 +23,6 @@ python manage.py runserver
 - build and start the docker container
 ```bash
 docker build -t flowerbed .
-docker run -p 8000:8000 -v $(pwd):/app flowerbed
+docker run --name flowerbed -d -p 8000:8000 flowerbed:latest
 ```
 - stop the docker container

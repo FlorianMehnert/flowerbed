@@ -1,5 +1,5 @@
 # Use an official Python runtime as a parent image
-FROM python:3.11-slim
+FROM python:3.12-slim
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -20,8 +20,8 @@ RUN pip install --upgrade pip && pip install -r requirements.txt
 # Copy project
 COPY . /app/
 
-# build static files
-CMD python manage.py tailwind build
+EXPOSE 8000
 
 # Run migrations and start server
-CMD python manage.py migrate && python manage.py runserver 0.0.0.0:8000
+CMD ["python", "manage.py", ",migrate", "0.0.0.0:8000"]
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
