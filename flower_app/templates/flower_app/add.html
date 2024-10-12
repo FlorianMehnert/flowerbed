@@ -34,15 +34,14 @@
     <div class="relative h-[80%] overflow-hidden border border-gray-200 rounded bg-[url('/static/images/dirt.png')]" id="flowerbed">
         <ul class="list-none absolute inset-0" id="flowerbed-ul">
             {% for flower in flowers %}
-                <li id="flower-{{ flower.id }}" class="absolute" style="left: {{ flower.x_position }}px; top: {{ flower.y_position }}px" data-start-date="{{ flower.start_date }}" data-end-date="{{ flower.end_date }}">
+                <li id="flower-{{ flower.id }}" class="absolute" style="left: {{ flower.x_position }}px; top: {{ flower.y_position }}px" data-start-date="{{ flower.start_date }}" data-end-date="{{ flower.end_date }}" onclick="deleteFlower({{ flower.id }})">
                     <img src="{{ flower.image_url }}" alt="{{ flower.name }}" title="{{ flower.name }}" class="w-12 h-12 shadow-md object-cover rounded border-white border-2">
                     <span class="text-xs bg-white w-full rounded text-center p-0.5">{{ flower.name }}</span>
+{#                    <button onclick="deleteFlower({{ flower.id }})" class="absolute top-0 right-0 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center">X</button>#}
                 </li>
             {% endfor %}
         </ul>
     </div>
-
-
 </div>
 
 <script>
@@ -110,13 +109,30 @@
     function preview(x, y) {
         const flowerbed_ul = document.getElementById('flowerbed-ul');
         const previous_previous = document.getElementById('preview');
-        if (!previous_previous){
-            flowerbed_ul.innerHTML += '<li id="preview" class="absolute" style="left:' + String(parseInt(x)-25) + 'px; top: ' + String(parseInt(y)-25) + 'px"><svg height="50" width="50" xmlns="http://www.w3.org/2000/svg"><circle r="25" cx="25" cy="25" fill="red" /></svg></li>';
+        if (!previous_previous) {
+            flowerbed_ul.innerHTML += '<li id="preview" class="absolute" style="left:' + String(parseInt(x) - 25) + 'px; top: ' + String(parseInt(y) - 25) + 'px"><svg height="50" width="50" xmlns="http://www.w3.org/2000/svg"><circle r="25" cx="25" cy="25" fill="red" /></svg></li>';
         } else {
-            previous_previous.style.left = String(parseInt(x)-25) + 'px';
-            previous_previous.style.top = String(parseInt(y)-25) + 'px';
+            previous_previous.style.left = String(parseInt(x) - 25) + 'px';
+            previous_previous.style.top = String(parseInt(y) - 25) + 'px';
         }
 
+    }
+
+    function deleteFlower(flowerId) {
+        if (confirm('Are you sure you want to delete this flower?')) {
+            fetch(`/delete-flower/${flowerId}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                },
+            }).then(response => {
+                if (response.ok) {
+                    document.getElementById(`flower-${flowerId}`).remove();
+                } else {
+                    alert('Failed to delete the flower. Please try again.');
+                }
+            });
+        }
     }
 
 </script>
