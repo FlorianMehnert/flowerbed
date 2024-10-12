@@ -7,14 +7,14 @@ git clone https://github.com/FlorianMehnert/flowerbed.git
 cd flowerbed
 ```
 
-### 1a: Docker
+### 1a: Docker-compose
 - build and start the docker container
 ```bash
-docker build -t flowerbed .
-docker run -p 8000:8000 flowerbed
+docker-compose up --build
+docker-compose down
 ```
 
-### 1b: Local Install
+### 1b: Local install
 - setup virtualenv
 ```bash
 python3 -m venv venv-flowerbed
