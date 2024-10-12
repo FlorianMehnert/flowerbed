@@ -1,0 +1,5 @@
+Django==5.1.2
+django-appconf==1.0.6
+django-browser-reload==1.15.0
+django-compressor==4.5.1
+django-tailwind==3.8.0
