@@ -30,7 +30,7 @@
             <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Hinzufügen</button>
         </form>
     </div>
-<div class="relative h-[80%] overflow-hidden border border-gray-200 rounded bg-[url('{% static 'images/dirt.png' %}')]" id="flowerbed">
+<div class="relative h-[80%] overflow-hidden border border-gray-200 rounded" style="background-image: url('{{ background_image_url }}');" id="flowerbed">
         <ul class="list-none absolute inset-0" id="flowerbed-ul">
             {% for flower in flowers %}
                 <li id="flower-{{ flower.id }}" class="absolute group" style="left: {{ flower.x_position }}px; top: {{ flower.y_position }}px" data-start-date="{{ flower.start_date }}" data-end-date="{{ flower.end_date }}" onclick="deleteFlower({{ flower.id }})">
@@ -128,7 +128,7 @@
 
     function deleteFlower(flowerId) {
         if (confirm('Möchtest du wirklich diese Pflanze löschen?')) {
-            fetch(`/delete-flower/${flowerId}/`, {
+            fetch(`delete-flower/${flowerId}/`, {
                 method: 'POST',
                 headers: {
                     'X-CSRFToken': '{{ csrf_token }}',
