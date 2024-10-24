@@ -127,8 +127,9 @@
     }
 
     function deleteFlower(flowerId) {
+        const url = `/flowerbed/delete-flower/${flowerId}/`;
         if (confirm('Möchtest du wirklich diese Pflanze löschen?')) {
-            fetch(`delete-flower/${flowerId}/`, {
+            fetch(url, {
                 method: 'POST',
                 headers: {
                     'X-CSRFToken': '{{ csrf_token }}',
