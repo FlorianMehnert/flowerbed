@@ -24,6 +24,7 @@
     <div class="mb-4">
         <form method="post" enctype="multipart/form-data" class="flex flex-row space-x-4">
             {% csrf_token %}
+            <meta name="csrf-token" content="{{ csrf_token }}">
             <div class="flex items-center space-x-2">
                 {{ form }}
             </div>
@@ -128,11 +129,12 @@
 
     function deleteFlower(flowerId) {
         const url = `/flowerbed/delete-flower/${flowerId}/`;
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         if (confirm('Möchtest du wirklich diese Pflanze löschen?')) {
             fetch(url, {
                 method: 'POST',
                 headers: {
-                    'X-CSRFToken': '{{ csrf_token }}',
+                    'X-CSRFToken': csrfToken,
                 },
             }).then(response => {
                 if (response.ok) {

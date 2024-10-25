@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
             name='Flower',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100, unique=True, verbose_name='BLumenname')),
+                ('name', models.CharField(max_length=100, unique=True, verbose_name='Blumenname')),
                 ('x_position', models.IntegerField()),
                 ('y_position', models.IntegerField()),
                 ('start_date', models.PositiveIntegerField(verbose_name='Anfang Blühzeit')),
