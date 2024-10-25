@@ -1,6 +1,8 @@
 import os
 from pathlib import Path
 
+from django.core.management.utils import get_random_secret_key
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 print("a" + str(BASE_DIR))
@@ -9,7 +11,11 @@ print("a" + str(BASE_DIR))
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-2=_8jg99-xf5x=v7q#)+k6&=d5canfz#_=2hg*0#c6*6gz@83f'
+if os.getenv('SECRET_KEY', 'NOTFOUND') == 'NOTFOUND':
+    SECRET_KEY=get_random_secret_key()
+else:
+    SECRET_KEY=os.getenv('SECRET_KEY')
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
