@@ -31,7 +31,7 @@
             <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Hinzufügen</button>
         </form>
     </div>
-<div class="relative h-[80%] overflow-hidden border border-gray-200 rounded" style="background-image: url('{{ background_image_url }}');" id="flowerbed">
+    <div class="relative h-[80%] overflow-hidden border border-gray-200 rounded" style="background-image: url('{{ background_image_url }}');" id="flowerbed">
         <ul class="list-none absolute inset-0" id="flowerbed-ul">
             {% for flower in flowers %}
                 <li id="flower-{{ flower.id }}" class="absolute group" style="left: {{ flower.x_position }}px; top: {{ flower.y_position }}px" data-start-date="{{ flower.start_date }}" data-end-date="{{ flower.end_date }}" onclick="deleteFlower({{ flower.id }})">
@@ -106,14 +106,20 @@
         const rect = flowerbed.getBoundingClientRect();
 
         // Calculate the x and y coordinates relative to the flowerbed element
-        const x = event.clientX - rect.left;
-        const y = event.clientY - rect.top;
+        const x = Math.trunc(event.clientX - rect.left);
+        const y = Math.trunc(event.clientY - rect.top);
 
         // Set the input fields with the coordinates relative to the element
         xInput.value = x;
         yInput.value = y;
         preview(x, y);
     });
+
+    // Set the input field to accept only integers
+    xInput.setAttribute('type', 'number');
+    xInput.setAttribute('step', '1');
+    yInput.setAttribute('type', 'number');
+    yInput.setAttribute('step', '1');
 
     function preview(x, y) {
         const flowerbed_ul = document.getElementById('flowerbed-ul');
