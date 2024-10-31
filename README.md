@@ -27,3 +27,8 @@ python manage.py migrate
 python manage.py runserver
 ```
 
+### 2a:
+- create a superuser for the django application
+```bash
+docker-compose exec web python manage.py createsuperuser
+```
